@@ -9,7 +9,15 @@ permalink: /02-stepright-capstone-project/
 
 A complete, hands-on Databricks data engineering project built end-to-end: ingestion, transformation layers, gold-layer reporting, orchestration, unit testing, data quality monitoring, and CI/CD deployment.
 
-<!-- PART-OVERVIEW: placeholder, filled in during content generation -->
+Part 1 taught each Databricks pillar in isolation -- Delta Lake, Unity Catalog, the medallion
+pattern, and the three Lakeflow pillars each got their own section, with only small, self-contained
+examples. Part 2 fuses all of it into one project you build start to finish: **StepRight**, a
+direct-to-consumer footwear and apparel retailer, taken from an empty catalog through bronze,
+silver, and gold layers, an orchestrated job, a unit and integration test suite, a data quality
+dashboard, and a CI/CD-driven deployment. Treat it as the dress rehearsal for Part 3: the same
+discipline -- design before code, test before deploy, prove data quality rather than assume it --
+is what separates a demo pipeline from one an enterprise trusts with its legacy warehouse
+migration.
 
 ## Sections
 

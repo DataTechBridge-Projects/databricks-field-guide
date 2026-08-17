@@ -8,9 +8,25 @@ permalink: /02-stepright-capstone-project/01-stepright-project-foundation/
 
 # StepRight - Project Foundation
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Every pipeline in Sections 2 through 8 reads from and writes to objects this section creates --
+skipping it means retrofitting a catalog, schema, and volume structure underneath code that's
+already running, which is exactly the kind of rework a real project avoids by doing setup first.
+This section stands up StepRight's Databricks footprint (Git folder, catalog, schema, landing
+volume), defines a test data strategy that stands in for access to a production order system, and
+seeds a first batch of realistic data so every later section has something real to ingest, not a
+placeholder.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart TD
+    Git[Git Repo<br/>steprightproject] -->|Git folder| WS[Databricks Workspace]
+    WS --> Cat[Catalog: dev]
+    Cat --> Sch[Schema: dev.step_right]
+    Sch --> Vol1[Volume: staging]
+    Sch --> Vol2[Volume: landing<br/>source subfolders]
+    Gen[Faker Data Generator] -->|batch zero files| Vol1
+    Vol1 -->|loader notebook| Vol2
+    Vol2 -.->|read by Section 2 bronze pipelines| Bronze[(Bronze Layer)]
+```
 
 ## Lectures
 

@@ -8,9 +8,33 @@ permalink: /02-stepright-capstone-project/02-stepright-ingestion-layer/
 
 # StepRight - Ingestion Layer
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+With `dev.step_right` provisioned and batch zero seeded, this section builds the first layer that
+actually runs: bronze. StepRight's two source shapes -- Lakeflow Connect's CDC feed and Auto
+Loader's file drops -- get separate pipelines because they fail differently and need different
+schema discipline, and both feed a shared quarantine pattern so a structurally broken row gets
+flagged and set aside instead of silently corrupting everything downstream in silver.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart TD
+    subgraph CDC["dev.raw_cdc"]
+        C1[customers_changefeed]
+        C2[orders_changefeed]
+        C3[order_items_changefeed]
+    end
+    subgraph Files["landing volume"]
+        F1[products/]
+        F2[inventory/]
+        F3[clickstream/]
+        F4[fulfillment/]
+    end
+    C1 & C2 & C3 -->|fixed schema, Lecture 1-2| BC[Bronze CDC Tables]
+    F1 & F2 & F3 & F4 -->|Auto Loader, rescue mode, Lecture 3-4| BF[Bronze File Tables]
+    BC --> BQ[Bronze Quality Tagging<br/>Lecture 5-6]
+    BF --> BQ
+    BQ -->|valid rows| Valid[(bronze_*_valid)]
+    BQ -->|failed rows| Quar[(bronze_*_quarantine)]
+    Valid -.->|read by Section 3 silver| Silver[(Silver Layer)]
+```
 
 ## Lectures
 

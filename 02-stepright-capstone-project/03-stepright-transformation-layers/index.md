@@ -8,9 +8,23 @@ permalink: /02-stepright-capstone-project/03-stepright-transformation-layers/
 
 # StepRight - Transformation Layers
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Bronze proved StepRight's data is structurally usable; silver decides whether it's *correct*. This
+section is where twelve business rules get applied, where `orders`, `customers`, and
+`order_items` gain full SCD Type 2 history via `AUTO CDC`, and where the report-only-by-default,
+quarantine-when-critical philosophy that Section 4's gold tables will lean on entirely gets built
+for real.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart TD
+    BV[(bronze_*_valid)] --> Tag[Business Rule Tagging<br/>12 rules, 4 categories]
+    Tag -->|critical pass| Src[silver source stream]
+    Tag -->|critical fail| Quar[(silver_*_quarantine)]
+    Src -->|AUTO CDC, SCD Type 2| Silver1[(silver_orders /<br/>silver_customers /<br/>silver_order_items)]
+    BP[(bronze_products_valid)] --> Dedupe[Latest-Wins Dedupe<br/>+ Validity Tags]
+    Dedupe --> Silver2[(silver_products)]
+    Silver1 -.->|read by Section 4 gold| Gold[(Gold Layer)]
+    Silver2 -.->|read by Section 4 gold| Gold
+```
 
 ## Lectures
 
