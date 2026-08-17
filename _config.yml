@@ -1,0 +1,41 @@
+title: "The Complete Databricks Field Guide"
+description: "A complete, self-authored Databricks tutorial: fundamentals through a hands-on capstone project to leading a legacy data warehouse migration onto the Lakehouse."
+remote_theme: just-the-docs/just-the-docs
+
+# GitHub Pages project-site settings.
+# Hosted at https://datatechbridge-projects.github.io/databricks-field-guide/, so
+# baseurl MUST be "/databricks-field-guide" (leading slash, no trailing slash).
+# If this repo is ever renamed to a user/org root site or given a custom domain,
+# set baseurl to "" and set url to the domain instead.
+url: ""
+baseurl: "/databricks-field-guide"
+
+plugins:
+  - jekyll-remote-theme
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+
+color_scheme: light
+search_enabled: true
+heading_anchors: true
+
+nav_sort: case_insensitive
+
+back_to_top: true
+back_to_top_text: "Back to top"
+
+footer_content: "Independent, self-authored Databricks companion notes."
+
+callouts:
+  key-term:
+    title: Key Term
+    color: green
+  important:
+    title: Important
+    color: red
+
+mermaid:
+  version: "10.9.1"

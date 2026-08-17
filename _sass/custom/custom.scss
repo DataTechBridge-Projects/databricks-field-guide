@@ -1,0 +1,16 @@
+// Site-wide style overrides.
+
+// The Course Map page reads as a navigation/overview surface, not lesson
+// content, so it is set in a distinct (serif) font family to visually
+// separate it from the sans-serif article body used everywhere else.
+.course-map {
+  font-family: Georgia, "Times New Roman", Cambria, serif;
+
+  h1, h2, h3, h4 {
+    font-family: Georgia, "Times New Roman", Cambria, serif;
+  }
+
+  table {
+    font-family: Georgia, "Times New Roman", Cambria, serif;
+  }
+}
