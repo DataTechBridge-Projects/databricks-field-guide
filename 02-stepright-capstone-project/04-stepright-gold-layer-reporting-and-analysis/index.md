@@ -8,9 +8,49 @@ permalink: /02-stepright-capstone-project/04-stepright-gold-layer-reporting-and-
 
 # StepRight - Gold Layer Reporting and Analysis
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Section 3 left four clean, current-state-queryable silver tables and three bronze tables that never
+needed business rules of their own. This section is where that shared foundation finally earns its
+keep: five denormalized **gold** tables, each built for one specific consumer -- finance, marketing,
+merchandising, growth, and operations -- instead of one generic "reporting layer" that satisfies
+nobody well. Every gold table here is a Lakeflow Declarative Pipelines **materialized view**, the
+same primitive [Part 1, Section 9]({{ '/01-databricks-fundamentals/09-lakeflow-spark-declarative-pipelines-transformation-pillar/' | relative_url }})
+introduced, now doing real work: joining SCD Type 2 history at its current version, reconciling a
+bronze table that skipped silver entirely, and turning row-level facts into the daily rollups a
+dashboard actually queries.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart LR
+    subgraph Silver
+        SO[silver_orders]
+        SOI[silver_order_items]
+        SC[silver_customers]
+        SP[silver_products]
+    end
+    subgraph Bronze["Bronze -- no silver layer needed"]
+        BI[bronze_inventory_valid]
+        BCS[bronze_clickstream_valid]
+        BF[bronze_fulfillment_valid]
+    end
+    SO --> G1[gold_daily_revenue]
+    SOI --> G1
+    SC --> G1
+    SP --> G1
+    SC --> G2[gold_customer_360]
+    SO --> G2
+    SOI --> G2
+    SOI --> G3[gold_product_performance]
+    SP --> G3
+    BI --> G3
+    BCS --> G4[gold_clickstream_funnel]
+    SP --> G4
+    SO --> G5[gold_fulfillment_health]
+    BF --> G5
+    G1 --> Finance[Finance]
+    G2 --> Marketing[Marketing]
+    G3 --> Merch[Merchandising]
+    G4 --> Growth[Growth Team]
+    G5 --> Ops[Operations]
+```
 
 ## Lectures
 

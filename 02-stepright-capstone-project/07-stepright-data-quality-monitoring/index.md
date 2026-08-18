@@ -8,9 +8,24 @@ permalink: /02-stepright-capstone-project/07-stepright-data-quality-monitoring/
 
 # StepRight - Data Quality Monitoring
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Section 5's `dq_check` proves one run's data was clean; it can't show whether quality is drifting
+over weeks, and it's visible only to engineers reading job logs. This section builds the layer that
+answers both gaps: lightweight SDP expectations feeding the pipeline's own event log, four SQL
+views consolidating expectations, quarantine counts, and referential integrity into one queryable
+shape, a dashboard the audience who never opens the Jobs UI can actually read, and an alert that
+watches for both a sudden breach and a slower trend a fixed threshold alone would miss.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart TD
+    E[Event log<br/>@dp.expect results] --> V1[dq_expectations_summary]
+    Q[(bronze_*_quarantine)] --> V2[dq_quarantine_summary]
+    V2 --> V4[dq_quarantine_rate]
+    Q --> V3[dq_referential_orphans]
+    V1 & V2 & V3 & V4 --> Dash[Dashboard:<br/>line, bar, table]
+    V4 --> Alert1[Alert: breach > 5%]
+    V4 --> Alert2[Alert: trending vs 14-day avg]
+    Alert1 & Alert2 --> Notify[Email / Slack]
+```
 
 ## Lectures
 

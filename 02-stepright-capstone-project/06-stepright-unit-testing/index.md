@@ -8,9 +8,31 @@ permalink: /02-stepright-capstone-project/06-stepright-unit-testing/
 
 # StepRight - Unit Testing
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Section 5's job proves the pipeline *runs*; nothing yet proves the transformation *logic* inside it
+is correct, independent of whatever data happens to be sitting in `dev.step_right` on a given day.
+This section fixes that: a handful of business-critical calculations -- revenue, discount
+allocation, deduplication, the quarantine threshold itself -- get extracted into pure,
+DataFrame-in/DataFrame-out functions and covered by a `pytest` suite that runs in seconds, on a
+laptop, with no cluster and no live workspace required.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart LR
+    subgraph Before["Inside @dp.table functions"]
+        A[Revenue math] 
+        B[Dedup logic]
+        C[Threshold decision]
+    end
+    subgraph After["Extracted, pure functions"]
+        A2[gold_logic.py]
+        B2[silver_logic.py]
+        C2[dq_logic.py]
+    end
+    A -->|Lecture 2| A2
+    B -->|Lecture 2| B2
+    C -->|Lecture 4| C2
+    A2 & B2 & C2 --> Tests[pytest suite<br/>local SparkSession, no cluster]
+    Tests -->|green| CI[Section 8: runs on every PR]
+```
 
 ## Lectures
 

@@ -8,9 +8,25 @@ permalink: /02-stepright-capstone-project/05-stepright-orchestration-and-job-sch
 
 # StepRight - Orchestration and Job Scheduling
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Section 4 left five gold tables that only update when someone manually starts a pipeline run --
+production-ready in structure, but not yet in operation. This section closes that gap: a single
+**Lakeflow Job** that triggers bronze ingestion, gates transformation on a real data quality
+check, runs silver and gold, and reports the full result into its own logs, all on a schedule with
+no human in the loop. The design decision at its center -- splitting one growing pipeline into two
+scoped ones so a job task can gate between them -- is as important as the job itself.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart TD
+    Sched[Schedule: 3 AM daily<br/>run_date parameter] --> A[run_ingestion<br/>pipeline_task]
+    A --> B{dq_check<br/>python task}
+    B -->|ALL_SUCCESS| C[run_transformation<br/>pipeline_task]
+    B -->|threshold exceeded| Fail[Task fails,<br/>run_transformation skipped]
+    C --> D[report<br/>python task]
+    D --> Logs[(Job run logs:<br/>bronze/silver/gold counts,<br/>quarantines, run_date)]
+
+    A -.triggers.-> BP[(steprightproject-bronze-cdc)]
+    C -.triggers.-> SGP[(steprightproject-silver-gold)]
+```
 
 ## Lectures
 

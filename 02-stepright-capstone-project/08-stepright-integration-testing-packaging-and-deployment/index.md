@@ -8,9 +8,25 @@ permalink: /02-stepright-capstone-project/08-stepright-integration-testing-packa
 
 # StepRight - Integration Testing, Packaging and Deployment
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Every pipeline, job, and dashboard StepRight has built so far exists only in `dev`, deployed by
+hand. This closing section packages the whole project as a **Databricks Asset Bundle**, adds the
+integration tests that verify a real deployment (not just isolated logic) works end to end, and
+automates the entire `dev` -> `uat` -> `prod` promotion path through CI/CD -- so that shipping a
+change to production is a reviewed pull request and one approval click, not a checklist of manual
+commands.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart TD
+    Bundle[databricks.yml +<br/>resources/*.yml] --> Bind[Bind existing dev resources]
+    Bind --> DevDeploy[deploy --target dev]
+    DevDeploy --> UnitCI[CI: unit-tests<br/>every PR]
+    UnitCI --> Merge[Merge to main]
+    Merge --> UatDeploy[CI: deploy --target uat<br/>+ bootstrap]
+    UatDeploy --> IntTests[CI: integration-tests<br/>real uat pipeline run]
+    IntTests --> Gate{{Manual approval}}
+    Gate --> ProdDeploy[CI: deploy --target prod<br/>+ smoke test]
+    ProdDeploy --> Live[First production run]
+```
 
 ## Lectures
 
