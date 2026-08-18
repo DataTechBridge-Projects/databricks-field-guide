@@ -8,9 +8,26 @@ permalink: /03-legacy-migration-to-databricks/05-schema-translation-with-lakebri
 
 # Schema Translation with Lakebridge (and Its Blind Spots)
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Federation buys time; it doesn't get any data physically migrated. Sooner or later, every table in
+the workload inventory needs a Delta schema, and getting there means running Lakebridge's analyzer
+and converter against real exported DDL -- then treating the output as a strong first draft rather
+than a finished migration. This section covers the type-mapping decisions the converter makes on
+your behalf, the two failure modes (precision loss, semantic drift) that pass every automated check
+while still being wrong, and the specific patterns for the objects that resist mechanical
+conversion entirely: 200-column monolith tables and geospatial columns.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart TD
+    A[("Source DDL export\n(Oracle / Teradata / SQL Server)")] -->|"lakebridge analyze"| B["Assessment report\ncomplexity, effort, dependencies"]
+    A -->|"lakebridge transpile"| C["Converted Databricks SQL DDL"]
+    C --> D{"Human audit"}
+    D -->|"Type mapping ambiguous?"| E["Check precision/scale\nagainst source data"]
+    D -->|"Constraint dropped?"| F["Reimplement or\nconsciously accept loss"]
+    D -->|"No native equivalent?"| G["Manual redesign\n(PERIOD, geometry, 200+ cols)"]
+    E --> H[("Reviewed Delta schema\nready to load")]
+    F --> H
+    G --> H
+```
 
 ## Lectures
 
