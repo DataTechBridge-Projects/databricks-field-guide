@@ -8,9 +8,21 @@ permalink: /03-legacy-migration-to-databricks/09-ai-assisted-migration-lakebridg
 
 # AI-Assisted Migration: Lakebridge plus LLMs With a Human Gate
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Lakebridge's transpiler handles the mechanical 80% of a migration; the Procedure Autopsy work in the last two sections handles the tangled procedural 20% that a rule-based converter can't touch -- and that's exactly the territory where teams now point a general-purpose LLM directly at a stored procedure for a first-draft PySpark translation. It's genuinely fast, and it is also the point in a migration where a plausible-looking wrong answer is easiest to ship by accident. This section builds the operating discipline that keeps that speed safe: prompts structured to close off the model's room to guess, three named failure patterns -- a window-function swap, a gallery of NULL/date/padding mismatches, and a transaction-boundary redesign -- worth recognizing on sight, and a versioned prompt library with a six-point audit gate that turns careful review into a repeatable checklist.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart TD
+    A["PL/SQL block\n(from the Procedure Autopsy worksheet)"] --> B["Four-block prompt\nContext / Contract / Constraints / Self-Audit"]
+    B --> C["LLM draft PySpark\n(pinned model version)"]
+    C --> D{"Six-point gate audit"}
+    D -->|"Row count / golden diff fails"| E["Reject --\nrevise prompt"]
+    D -->|"Window-function, NULL, or\ndate invariant fails"| E
+    D -->|"Transaction redesign\nundocumented"| E
+    D -->|"All six checks pass"| F[("Reviewed PySpark,\nmerged to production")]
+    E --> G["Versioned prompt library\n(git, YAML, pinned model)"]
+    G --> B
+    F --> G
+```
 
 ## Lectures
 

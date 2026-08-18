@@ -8,9 +8,26 @@ permalink: /03-legacy-migration-to-databricks/10-the-ingestion-decision-tree/
 
 # The Ingestion Decision Tree
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Every legacy nightly-batch job you've ever tuned made an ingestion decision without naming it as
+one -- a schedule that fit the maintenance window, a JDBC connection sized to what the source
+database could tolerate, a manifest file (or its absence) that determined whether a missing feed
+failed loudly or corrupted silently downstream. Migrating that job to Databricks doesn't remove
+those decisions; it just moves them from implicit habit to an explicit choice among batch vs.
+streaming, JDBC bulk pull vs. Auto Loader, and build-it-yourself vs. a partner CDC tool. This
+section works through that decision tree end to end, then collapses it into a single matrix you can
+apply to any table in the migration inventory.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart TD
+    A[Source table] --> B{Change volume<br/>+ latency need?}
+    B -->|Full snapshot,<br/>batch window OK| C[JDBC bulk pull]
+    B -->|Files landing<br/>continuously| D[Auto Loader]
+    B -->|Row-level CDC,<br/>low latency| E[Partner CDC tool<br/>Fivetran / Qlik / Arcion]
+    C --> F[Bronze Delta table]
+    D --> F
+    E --> F
+    F --> G[Ingestion Pattern Matrix<br/>documents the choice]
+```
 
 ## Lectures
 

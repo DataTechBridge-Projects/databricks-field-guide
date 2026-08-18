@@ -8,9 +8,31 @@ permalink: /03-legacy-migration-to-databricks/07-the-procedure-autopsy-decomposi
 
 # The Procedure Autopsy: Decomposing PL/SQL
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Physical design gets a table's storage right; stored procedures are where a legacy migration's real
+risk concentrates, because a procedure's business logic is buried inside cursors, transaction
+management, and control flow that have no direct Databricks equivalent. This section builds a
+repeatable method for pulling that logic out safely: color-code every block of a procedure by
+category, separate genuine business rules from procedural scaffolding the platform makes
+unnecessary, reconstruct the hidden execution graph behind a cascading-trigger package, and capture
+all of it on a single worksheet before any translation code gets written. That worksheet is the
+handoff into the next section, where these classified blocks become actual `MERGE INTO` statements
+and Lakeflow Declarative Pipeline flows.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart TD
+    A[Stored procedure or<br/>trigger package] --> B[Color-code every block:<br/>blue / green / yellow / orange / red]
+    B --> C{Block encodes a<br/>business rule?}
+    C -->|Yes, blue| D[Extract the rule as<br/>a plain-language statement]
+    C -->|No, mechanism only| E[Discard -- absorbed into<br/>target pattern]
+    A --> F{Cascading triggers<br/>across tables?}
+    F -->|Yes| G[Build dependency graph,<br/>topologically sort]
+    F -->|No| H[Single procedure --<br/>no graph needed]
+    D --> I[Decomposition worksheet]
+    E --> I
+    G --> I
+    H --> I
+    I --> J[Target pattern: MERGE,<br/>Declarative Pipeline flow,<br/>or orchestration]
+```
 
 ## Lectures
 

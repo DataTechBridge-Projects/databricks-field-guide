@@ -8,9 +8,31 @@ permalink: /03-legacy-migration-to-databricks/06-physical-design-for-delta-liqui
 
 # Physical Design for Delta: Liquid Clustering Over Indexes
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Every migrated table lands on Databricks with its Oracle, Teradata, or SQL Server indexing strategy
+still fresh in the migration team's head, and rebuilding that strategy one index-shaped structure at
+a time is the fastest way to waste compute in the first month after cutover. This section replaces
+that reflex with how Liquid Clustering actually works: why Delta's file-skipping model is a
+different mechanism than B-tree or bitmap indexing, how it compares to the partitioning and
+Z-Ordering techniques older tutorials still teach, how to derive clustering keys from real workload
+data instead of guessing, and -- just as important -- when a table shouldn't be clustered at all. It
+closes with a one-page decision card that turns the whole judgment call into something repeatable
+across the hundreds of tables a real migration touches, rather than a debate re-litigated table by
+table.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart TD
+    A[Migrated table] --> B{Existing partition or<br/>Z-Order columns?}
+    B -->|Yes| C[Start clustering keys<br/>from those columns]
+    B -->|No| D[Pull workload inventory:<br/>WHERE / JOIN / GROUP BY columns]
+    C --> E{Query pattern<br/>well understood?}
+    D --> E
+    E -->|Yes, high confidence| F[Manually pin up to<br/>4 clustering keys]
+    E -->|No, still evolving| G["CLUSTER BY AUTO"]
+    F --> H{Small, fully-scanned, or<br/>low-cardinality only?}
+    G --> H
+    H -->|Yes| I[Leave table unclustered]
+    H -->|No| J[Apply Liquid Clustering]
+```
 
 ## Lectures
 

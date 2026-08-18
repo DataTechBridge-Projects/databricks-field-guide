@@ -8,9 +8,22 @@ permalink: /03-legacy-migration-to-databricks/13-building-the-reconciliation-eng
 
 # Building the Reconciliation Engine
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+The previous section defined the five-layer reconciliation stack as a concept. This one builds it as a running system: a PySpark job that computes hashes at scale, a Delta audit table that keeps a permanent, queryable ledger of every parity check ever run, and a dashboard that turns that ledger into a single verdict a migration lead can read in five seconds. None of this is optional tooling -- without it, "we reconciled the data" means someone eyeballed a row count once, which is exactly the kind of unverified claim the prior section spent its time discouraging.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+The section also makes a scheduling argument as much as an engineering one: reconciliation that only runs at the end of a migration finds its bugs at the worst possible time, when every defect is expensive and the cutover date is close. Running the same engine nightly from day zero of development turns reconciliation into a cheap, boring, continuous signal instead of a stressful pre-cutover fire drill -- and a script library built once, driven by config, is what makes running it against forty table pairs as easy as running it against one.
+
+```mermaid
+flowchart LR
+    subgraph Nightly["Lakeflow Job -- nightly"]
+        S["Source table\n(Oracle via Federation\nor extract)"] --> H1["Hash rows\nsha2(concat_ws(...))"]
+        T["Target Delta table"] --> H2["Hash rows\nsha2(concat_ws(...))"]
+        H1 --> J["Full outer join\non hash + key"]
+        H2 --> J
+        J --> A[("Delta audit table\nappend-only ledger")]
+    end
+    A --> D["Reconciliation dashboard\nbig counter + heat map"]
+    A --> AL["Drift alert\n(threshold breach)"]
+```
 
 ## Lectures
 

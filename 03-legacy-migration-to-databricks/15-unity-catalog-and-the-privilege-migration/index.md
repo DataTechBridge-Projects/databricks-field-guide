@@ -8,9 +8,33 @@ permalink: /03-legacy-migration-to-databricks/15-unity-catalog-and-the-privilege
 
 # Unity Catalog and the Privilege Migration
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Every legacy grant you inherit -- 500 Oracle roles, a decade of one-off `GRANT SELECT ON schema.table TO user` statements, a role hierarchy nobody fully remembers building -- has to land somewhere in Unity Catalog before cutover, and "somewhere" is not "everywhere, unchanged." This section is the bridge between the reconciliation work you just finished proving semantic parity and the cost/governance sections ahead: get the privilege model wrong here and either the business gets locked out on cutover day, or -- worse -- the migration quietly over-grants and nobody notices until an audit. The goal is not a byte-for-byte copy of the Oracle role tree; it's a smaller, group-based, tag-driven model that grants the same effective access with a fraction of the objects to maintain.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart TD
+    subgraph Oracle["Legacy Oracle"]
+        R1[Role: AR_CLERK]
+        R2[Role: AR_MANAGER]
+        R3[...500 roles]
+        G1[Per-table GRANTs]
+    end
+
+    subgraph Matrix["Privilege Migration Matrix"]
+        M[Object x Grantee x Privilege<br/>legacy vs target]
+    end
+
+    subgraph UC["Unity Catalog"]
+        MS[Metastore] --> CAT[Catalog]
+        CAT --> SCH[Schema]
+        SCH --> TBL[Table / View]
+        GRP[Groups] -->|USE CATALOG, USE SCHEMA, SELECT| CAT
+        GRP -->|schema-level grants| SCH
+        TAG[Tags: pii, domain, tier] -.governs.-> TBL
+    end
+
+    Oracle -->|inventory & translate| Matrix
+    Matrix -->|collapse to ~12 tags + groups| UC
+
 
 ## Lectures
 

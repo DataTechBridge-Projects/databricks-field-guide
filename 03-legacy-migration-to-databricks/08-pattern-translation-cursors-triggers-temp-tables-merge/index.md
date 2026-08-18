@@ -8,9 +8,22 @@ permalink: /03-legacy-migration-to-databricks/08-pattern-translation-cursors-tri
 
 # Pattern Translation: Cursors, Triggers, Temp Tables, MERGE
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+The decomposition worksheet from the previous section ends with a "target pattern" column left
+blank until the classification work is done. This section fills that column in for the five
+patterns that account for most of what shows up inside a legacy procedure: cursors, triggers,
+scheduled jobs, temp tables, and `MERGE` statements. Each lecture takes one legacy construct and
+shows its concrete Databricks-native replacement, worked from real code rather than abstract
+mapping rules -- closing with an anti-pattern gallery that catalogs the literal, line-by-line
+translations experienced migration teams learn to avoid.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart LR
+    A[Cursor loop] --> A2[Set-based DataFrame /<br/>Spark SQL operation]
+    B[Row-level trigger] --> B2[Delta Change Data Feed]
+    C[DBMS_SCHEDULER job] --> C2[Lakeflow Jobs task]
+    D[Session temp table] --> D2[CTE or Declarative<br/>Pipeline flow]
+    E[Oracle MERGE] --> E2[Delta MERGE INTO]
+```
 
 ## Lectures
 
