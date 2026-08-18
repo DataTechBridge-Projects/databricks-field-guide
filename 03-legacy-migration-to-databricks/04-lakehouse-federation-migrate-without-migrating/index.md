@@ -8,9 +8,22 @@ permalink: /03-legacy-migration-to-databricks/04-lakehouse-federation-migrate-wi
 
 # Lakehouse Federation: Migrate Without Migrating
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+The 3-R decision assumes you're moving data. **Lakehouse Federation** is the tool for the phase
+before that's even necessary: querying a legacy Oracle or SQL Server system directly from Databricks,
+through Unity Catalog, without copying a single row. This section covers what federation actually
+does and doesn't do, how to configure a real connection, why it becomes a liability rather than a
+convenience for hot, high-volume tables, and the phased pattern -- federate first, migrate the
+workloads that need it, decommission last -- that turns federation into a genuine de-risking tool
+instead of a permanent crutch.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart LR
+    A["Databricks / Unity Catalog"] -->|"CREATE CONNECTION"| B["Foreign Connection\n(Oracle / SQL Server)"]
+    B -->|"CREATE FOREIGN CATALOG"| C["Foreign Catalog\n(mirrors legacy schema)"]
+    C -->|"Query pushdown via JDBC"| D[("Legacy EDW\n(source of truth)")]
+    E["Analysts / BI tools"] -->|"Query as if native"| C
+    C -.->|"Hot table? High volume?\nMigrate instead"| F["Delta Table\n(physically migrated)"]
+```
 
 ## Lectures
 

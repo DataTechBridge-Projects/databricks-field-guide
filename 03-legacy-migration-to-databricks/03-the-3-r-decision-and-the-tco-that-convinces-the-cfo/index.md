@@ -8,9 +8,25 @@ permalink: /03-legacy-migration-to-databricks/03-the-3-r-decision-and-the-tco-th
 
 # The 3-R Decision and the TCO That Convinces the CFO
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+The workload inventory from the last section gave every object a first-pass verdict. This section
+turns those verdicts into a funded project: the **3-R decision** (rehost, re-platform, or
+re-architect) applied per workload rather than as one blanket strategy, a scorecard that makes the
+call defensible instead of a gut feeling, a three-year TCO model that translates the decision into
+dollars, and the one-slide narrative that actually gets a CFO or board to sign off. It closes with
+the anti-pattern that sinks more migrations than any technical mistake: treating "lift and shift
+everything" as a strategy instead of a fallback for the workloads that genuinely call for it.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart LR
+    A["Workload Inventory\n(Lift / Redesign / Retire)"] --> B["Assessment Scorecard\n(6 dimensions, 1-5)"]
+    B --> C{"3-R Decision"}
+    C --> D["Rehost\n(low complexity, low value)"]
+    C --> E["Re-platform\n(moderate complexity)"]
+    C --> F["Re-architect\n(high value, high change freq)"]
+    D & E & F --> G["3-Year TCO Calculator"]
+    G --> H["One-Slide Board Narrative"]
+    H --> I["Funded Migration"]
+```
 
 ## Lectures
 

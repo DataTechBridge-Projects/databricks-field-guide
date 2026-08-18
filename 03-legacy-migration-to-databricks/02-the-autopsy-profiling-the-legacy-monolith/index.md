@@ -8,9 +8,28 @@ permalink: /03-legacy-migration-to-databricks/02-the-autopsy-profiling-the-legac
 
 # The Autopsy: Profiling the Legacy Monolith
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Every migration proposal starts with someone counting terabytes and tables. That count answers the
+wrong question. This section is the diagnostic work that has to happen before a single line of DDL
+gets translated: reading the legacy platform's own instrumentation -- Oracle AWR reports, Teradata
+DBQL, SQL Server Query Store -- to find out which objects are actually driving load and cost, mapping
+stored-procedure dependencies and table access patterns so you know what breaks if you touch what,
+and rolling all of it into one workload inventory that becomes the source of truth every later
+decision -- the 3-R call, the sequencing plan, the go/no-go matrix -- traces back to. Skipping this
+autopsy is the single most common reason migrations blow their budget, so treat it as the foundation
+the rest of this part stands on, not a formality before the "real" work starts.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart TD
+    A["Legacy Monolith"] --> B["Instrumentation"]
+    B --> B1["Oracle AWR"]
+    B --> B2["Teradata DBQL"]
+    B --> B3["SQL Server Query Store"]
+    B1 & B2 & B3 --> C["Real bottlenecks:\ntop SQL, I/O waits, CPU hogs"]
+    A --> D["Stored-procedure\ndependency graph"]
+    A --> E["Table access\nheat map"]
+    C & D & E --> F["Workload Inventory\n(source of truth)"]
+    F --> G["3-R Decision\n(next section)"]
+```
 
 ## Lectures
 

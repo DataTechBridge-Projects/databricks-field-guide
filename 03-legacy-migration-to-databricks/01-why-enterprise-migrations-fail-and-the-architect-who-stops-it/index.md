@@ -8,9 +8,28 @@ permalink: /03-legacy-migration-to-databricks/01-why-enterprise-migrations-fail-
 
 # Why Enterprise Migrations Fail (And the Architect Who Stops It)
 
-<!-- SECTION-OVERVIEW: placeholder, filled in during content generation -->
+Roughly a third of large enterprise data warehouse migrations stall or get scrapped before cutover
+-- not because the target platform was wrong, but because the team ran a data movement project when
+what they actually had was a business-logic archaeology project. This section sets the frame for
+everything that follows: why migrations really fail, what Lakebridge automates well and what it
+can never automate, and the operating model -- assess, translate, reconcile, cut over, govern,
+optimize -- that the rest of this part is structured around. By the end you'll know what toolkit
+you're building toward (a TCO calculator, reconciliation scripts, an ABAC tag taxonomy, a go/no-go
+matrix) and why each one earns its place.
 
-<!-- SECTION-DIAGRAM: placeholder, one diagram summarizing this section's architecture/flow, added during content generation -->
+```mermaid
+flowchart LR
+    A["Legacy EDW\n(Oracle / Teradata / SQL Server)"] --> B{"Why migrations stall"}
+    B --> C["Underestimated procedural logic\n(500 stored procs, not just tables)"]
+    B --> D["No reconciliation until the end\n(surprises at cutover)"]
+    B --> E["Lift-and-shift everything\n(no re-architecture ROI)"]
+    C & D & E --> F["Migration Architect's\nOperating Model"]
+    F --> G["Assess"]
+    F --> H["Translate"]
+    F --> I["Reconcile"]
+    F --> J["Cut over"]
+    F --> K["Govern & optimize"]
+```
 
 ## Lectures
 

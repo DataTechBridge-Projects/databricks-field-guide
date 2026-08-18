@@ -9,7 +9,18 @@ permalink: /03-legacy-migration-to-databricks/
 
 A field guide for migrating a legacy enterprise data warehouse (Oracle, Teradata, SQL Server, PL/SQL) to the Databricks Lakehouse: assessment, TCO, schema and procedure translation, reconciliation, cutover, governance migration, and FinOps.
 
-<!-- PART-OVERVIEW: placeholder, filled in during content generation -->
+In Part 1 you learned the Databricks primitives -- Delta Lake, Unity Catalog, the medallion
+architecture, Lakeflow. In Part 2 you used them to build StepRight end to end on a clean slate. Part
+3 is the job you'll actually be hired for: there is no clean slate, only a twenty-year-old Oracle or
+Teradata warehouse with five hundred stored procedures, a nightly batch window that stopped fitting
+in its window three years ago, and a CFO asking why the license renewal costs more than the team
+that maintains it. This part walks the full arc of an enterprise EDW migration in the order a real
+engagement runs it: profiling the legacy estate and picking the right migration strategy for each
+workload, translating schema and procedural logic with Lakebridge and knowing exactly where it needs
+a human, standing up ingestion and CDC pipelines with Lakeflow, proving semantic parity with a
+reconciliation stack before anyone trusts a cutover, migrating governance into Unity Catalog, and
+running the FinOps discipline that keeps the new platform cheaper than the one it replaced. It closes
+with a capstone war-room simulation where you make the go/no-go call yourself.
 
 ## Sections
 
