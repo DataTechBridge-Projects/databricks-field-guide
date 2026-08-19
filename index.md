@@ -14,7 +14,8 @@ a full hands-on capstone project to leading a legacy EDW migration onto the Lake
 {: .fs-6 .fw-300 }
 
 New here? Start with the [Course Map]({{ '/course-map/' | relative_url }}) for the full syllabus at a glance, or jump
-straight into Part 1 below.
+straight into Part 1 below. Looking for a term you've heard but not seen defined yet? Check the
+[Databricks Glossary]({{ '/glossary/' | relative_url }}).
 
 ## Parts
 

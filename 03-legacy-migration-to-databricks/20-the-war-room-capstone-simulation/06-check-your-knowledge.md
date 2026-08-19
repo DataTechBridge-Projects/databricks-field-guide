@@ -15,7 +15,7 @@ permalink: /03-legacy-migration-to-databricks/20-the-war-room-capstone-simulatio
 
 ---
 
-| [&larr; Previous: Your Capstone Deliverable and Course Wrap]({{ '/03-legacy-migration-to-databricks/20-the-war-room-capstone-simulation/your-capstone-deliverable-and-course-wrap/' | relative_url }}) |  |
+| [&larr; Previous: Your Capstone Deliverable and Course Wrap]({{ '/03-legacy-migration-to-databricks/20-the-war-room-capstone-simulation/your-capstone-deliverable-and-course-wrap/' | relative_url }}) | [Next: Databricks Glossary &rarr;]({{ '/glossary/' | relative_url }}) |
 |:---|---:|
 
 <!-- prevnext:end -->
